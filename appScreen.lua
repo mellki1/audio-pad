@@ -148,6 +148,7 @@ local notes = {
     },
 
 }
+
 function scene:create( event )
     local sceneGroup = self.view
     local background = display.newImageRect(sceneGroup, "backgorund.jpg", 1080, 1920 )
