@@ -9,8 +9,6 @@ local fontSizeWithAccident = 35
 local wPositionRight = w * .26
 local wPositionLeft = w * .74
 local squares = {}
-
-
 local notes = {
     {   text = "C",
         x = wPositionRight,
@@ -21,7 +19,8 @@ local notes = {
         aduioOptions = {
             loops = -1,
             channel = 1
-        }
+        },
+        enable = false
     },
     {   text = "C#/Db",
         x = wPositionLeft,
@@ -32,7 +31,8 @@ local notes = {
         aduioOptions = {
             loops = -1,
             channel = 2
-        }
+        },
+        enable = false
     },
     {   text = "D",
         x = wPositionRight,
@@ -43,7 +43,8 @@ local notes = {
         aduioOptions = {
             loops = -1,
             channel = 3
-        }
+        },
+        enable = false
     },
     {   text = "D#/Eb",
         x = wPositionLeft,
@@ -54,7 +55,8 @@ local notes = {
         aduioOptions = {
             loops = -1,
             channel = 4
-        }
+        },
+        enable = false
     },
     {   text = "E",
         x = wPositionRight,
@@ -65,7 +67,8 @@ local notes = {
         aduioOptions = {
             loops = -1,
             channel = 5
-        }
+        },
+        enable = false
     },
     {   text = "F",
         x = wPositionLeft,
@@ -76,7 +79,8 @@ local notes = {
         aduioOptions = {
             loops = -1,
             channel = 6
-        }
+        },
+        enable = false
     },
     {   text = "F#/Gb",
         x = wPositionRight,
@@ -87,7 +91,8 @@ local notes = {
         aduioOptions = {
             loops = -1,
             channel = 7
-        }
+        },
+        enable = false
     },
     {   text = "G",
         x = wPositionLeft,
@@ -98,7 +103,8 @@ local notes = {
         aduioOptions = {
             loops = -1,
             channel = 8
-        }
+        },
+        enable = false
     },
     {   text = "G#/Ab",
         x = wPositionRight,
@@ -109,7 +115,8 @@ local notes = {
         aduioOptions = {
             loops = -1,
             channel = 9
-        }
+        },
+        enable = false
     },
     {   text = "A",
         x = wPositionLeft,
@@ -120,7 +127,8 @@ local notes = {
         aduioOptions = {
             loops = -1,
             channel = 10
-        }
+        },
+        enable = false
     },
     {   text = "A#/Bb",
         x = wPositionRight,
@@ -131,7 +139,8 @@ local notes = {
         aduioOptions = {
             loops = -1,
             channel = 11
-        }
+        },
+        enable = false
     },
     {   text = "B",
         x = wPositionLeft,
@@ -142,7 +151,8 @@ local notes = {
         aduioOptions = {
             loops = -1,
             channel = 12
-        }
+        },
+        enable = false
     },
 
 }
@@ -151,26 +161,27 @@ local background = display.newImageRect("./images/backgorund.jpg", 1080, 1920 )
 background.x = display.contentCenterX
 background.y = display.contentCenterY
 
-local function startSong(square, note)
-    return function(event)
-        square:setFillColor(0,0,255,0.1)
-        audio.play(note.song, note.aduioOptions);
-        -- event Stop Song
-        square:addEventListener("tap", function (event)
+local function startOrStopSong(square, note)
+    return function (event)
+        if note.enable == false then
+            note.enable = true
+            square:setFillColor(0,0,255,0.1)
+            audio.play(note.song, note.aduioOptions);
+        elseif note.enable == true then
+            note.enable = false
             square:setFillColor(0,0,255,0.3)
-            audio.pause(note.aduioOptions.channel)
-            square:addEventListener("tap", startSong(square, note))
-            return true;
-        end)
+            audio.stop(note.aduioOptions.channel);
+        end
     end
 end
+
 
 local function drawSquares()
     for index, note in ipairs(notes) do
         local square= display.newRoundedRect(note.x, note.y, w/2.2, w/3.4, 12)
         square:setFillColor(0,0,255,0.3)
         display.newText(note.text, note.x, note.y, note.font, note.fontSize)
-        square:addEventListener("tap", startSong(square, note))
+        square:addEventListener("tap", startOrStopSong(square, note))
         table.insert(squares, square)
     end
 end
